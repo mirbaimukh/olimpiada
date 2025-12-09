@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Олимпиада - Начало</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Дополнительные стили для стартовой страницы */
+        .start-container {
+            max-width: 500px;
+            text-align: center;
+            padding: 40px 30px;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            color: #4fc3f7;
+            margin-bottom: 20px;
+        }
+        
+        .start-title {
+            color: #0277bd;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .start-subtitle {
+            color: #0288d1;
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1rem;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+            outline: none;
+        }
+        
+        .start-btn {
+            background: linear-gradient(to right, #00c853, #64dd17);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .start-btn:hover {
+            background: linear-gradient(to right, #00e676, #76ff03);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 200, 83, 0.3);
+        }
+        
+        .start-btn i {
+            margin-right: 12px;
+            font-size: 1.5rem;
+        }
+        
+        .rules {
+            background-color: #f1f8e9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: left;
+        }
+        
+        .rules h3 {
+            color: #33691e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .rules h3 i {
+            margin-right: 10px;
+        }
+        
+        .rules ul {
+            padding-left: 20px;
+        }
+        
+        .rules li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .error-message {
+            color: #f44336;
+            background-color: #ffebee;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        /* Стили для блока повторного прохождения */
+        .retake-notice {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            animation: fadeIn 0.5s;
+        }
+        
+        .retake-notice h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .retake-notice p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .retake-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .retake-btn, .cancel-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .retake-btn {
+            background: linear-gradient(to right, #28a745, #20c997);
+            color: white;
+        }
+        
+        .retake-btn:hover {
+            background: linear-gradient(to right, #20c997, #28a745);
+            transform: translateY(-2px);
+        }
+        
+        .cancel-btn {
+            background: linear-gradient(to right, #6c757d, #adb5bd);
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: linear-gradient(to right, #adb5bd, #6c757d);
+            transform: translateY(-2px);
+        }
+        
+        .timer-note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container start-container">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+        
+        <h1 class="start-title">Олимпиада "Школьник БГИ№2"</h1>
+        <p class="start-subtitle">Для учеников 3-4 классов</p>
+        
+        <form id="start-form">
+            <div class="input-group">
+                <label for="firstName"><i class="fas fa-user"></i> Имя</label>
+                <input type="text" id="firstName" placeholder="Например: Анна" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="lastName"><i class="fas fa-users"></i> Фамилия</label>
+                <input type="text" id="lastName" placeholder="Например: Иванова" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="class"><i class="fas fa-school"></i> Класс</label>
+                <select id="class" required>
+                    <option value="" disabled selected>Выберите ваш класс</option>
+                    <option value="3">3 класс</option>
+                    <option value="4">4 класс</option>
+                    <option value="other">Другой класс</option>
+                </select>
+            </div>
+            
+            <div class="error-message" id="error-message">
+                <i class="fas fa-exclamation-circle"></i> Пожалуйста, заполните все поля
+            </div>
+            
+            <!-- Блок "Вы уже проходили" (изначально скрыт) -->
+            <div id="retake-notice" class="retake-notice" style="display: none;">
+                <h3><i class="fas fa-history"></i> Вы уже проходили этот тест</h3>
+                <p>Привет, <span id="prev-name" style="font-weight: bold;"></span>!</p>
+                <p>Ваш последний результат: <span id="prev-score" style="font-weight: bold;"></span><br>
+                Дата: <span id="prev-date" style="font-weight: bold;"></span></p>
+                <div class="retake-buttons">
+                    <button type="button" id="retake-btn" class="retake-btn">
+                        <i class="fas fa-redo"></i> Пройти заново
+                    </button>
+                    <button type="button" id="cancel-retake" class="cancel-btn">
+                        Отмена
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="start-btn" id="start-btn">
+                <i class="fas fa-play-circle"></i> Начать олимпиаду
+            </button>
+        </form>
+        
+        <div class="rules">
+            <h3><i class="fas fa-info-circle"></i> Правила олимпиады:</h3>
+            <ul>
+                <li>Введи своё имя, фамилию и выбери класс</li>
+                <li>Ответь на все вопросы теста</li>
+                <li>В каждом вопросе выбери один правильный ответ</li>
+                <li>После завершения ты увидишь свой результат</li>
+                <li><strong>Время на выполнение: 1 час (60 минут)</strong></li>
+                <li>Результаты автоматически отправятся учителю</li>
+            </ul>
+            
+            <div class="timer-note">
+                <i class="fas fa-clock"></i> Таймер запустится после начала теста
+            </div>
+        </div>
+        
+        <footer>
+            <p>Сайт создан для учебной олимпиады. © <span id="current-year">2024</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Устанавливаем текущий год
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Проверяем, не заполнял ли пользователь форму раньше
+        function checkPreviousAttempt() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const userClass = document.getElementById('class').value;
+            
+            if (!firstName || !lastName || !userClass) return false;
+            
+            const userKey = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${userClass}`;
+            const savedData = localStorage.getItem(`olymp_result_${userKey}`);
+            
+            if (savedData) {
+                const result = JSON.parse(savedData);
+                
+                // Показываем блок с предыдущим результатом
+                document.getElementById('prev-name').textContent = `${firstName} ${lastName} (${userClass} класс)`;
+                document.getElementById('prev-score').textContent = `${result.score}/${result.total}`;
+                document.getElementById('prev-date').textContent = new Date(result.timestamp).toLocaleDateString('ru-RU');
+                
+                document.getElementById('retake-notice').style.display = 'block';
+                document.getElementById('start-btn').style.display = 'none';
+                
+                return true;
+            }
+            
+            return false;
+        }
+
+        // Обработчики событий для полей ввода
+        document.getElementById('firstName').addEventListener('input', function() {
+            setTimeout(checkPreviousAttempt, 300);
+        });
+
+        document.getElementById('lastName').addEventListener('input', function() {
+            setTimeout(checkPreviousAttempt, 300);
+        });
+
+        document.getElementById('class').addEventListener('change', function() {
+            setTimeout(checkPreviousAttempt, 300);
+        });
+
+        // Кнопка "Пройти заново"
+        document.getElementById('retake-btn').addEventListener('click', function() {
+            // Удаляем запись о предыдущем результате
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const userClass = document.getElementById('class').value;
+            const userKey = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${userClass}`;
+            localStorage.removeItem(`olymp_result_${userKey}`);
+            
+            // Прячем блок и показываем кнопку "Начать"
+            document.getElementById('retake-notice').style.display = 'none';
+            document.getElementById('start-btn').style.display = 'block';
+        });
+
+        // Кнопка "Отмена"
+        document.getElementById('cancel-retake').addEventListener('click', function() {
+            document.getElementById('retake-notice').style.display = 'none';
+            document.getElementById('start-btn').style.display = 'block';
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('class').value = '';
+            document.getElementById('firstName').focus();
+        });
+
+        // Обработка формы
+        document.getElementById('start-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Отменяем стандартную отправку формы
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const userClass = document.getElementById('class').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            // Проверяем, что все поля заполнены
+            if (!firstName || !lastName || !userClass) {
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            errorMessage.style.display = 'none';
+            
+            // Сохраняем данные в localStorage (память браузера)
+            localStorage.setItem('olympFirstName', firstName);
+            localStorage.setItem('olympLastName', lastName);
+            localStorage.setItem('olympClass', userClass);
+            
+            // Переходим на страницу теста
+            window.location.href = 'test.html';
+        });
+
+        // Автофокус на поле имени
+        document.getElementById('firstName').focus();
+    </script>
+</body>
+</html>
