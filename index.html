@@ -198,6 +198,12 @@
             font-weight: bold;
             color: #856404;
         }
+        
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -209,20 +215,51 @@
         <h1 class="start-title">Башҡорт теленән "Тәүгеләр араһында беренсе" олимпиадаһы</h1>
         <p class="start-subtitle">3-4 кластарҙа уҡыусылар өсөн</p>
         
-        <form id="start-form">
+        <form id="start-form" autocomplete="off">
             <div class="input-group">
                 <label for="firstName"><i class="fas fa-user"></i> Исем</label>
-                <input type="text" id="firstName" placeholder="Мәҫәлән: Юлиә" required>
+                <input type="text" 
+                       id="firstName" 
+                       name="firstName" 
+                       placeholder="Мәҫәлән: Юлиә" 
+                       required 
+                       autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="words"
+                       spellcheck="false">
             </div>
             
             <div class="input-group">
                 <label for="lastName"><i class="fas fa-users"></i> Фамилия</label>
-                <input type="text" id="lastName" placeholder="Мәҫәлән: Фаттахова" required>
+                <input type="text" 
+                       id="lastName" 
+                       name="lastName" 
+                       placeholder="Мәҫәлән: Фаттахова" 
+                       required 
+                       autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="words"
+                       spellcheck="false">
             </div>
             
             <div class="input-group">
                 <label for="class"><i class="fas fa-school"></i> Класс</label>
-                <input type="text" id="class" placeholder="Мәҫәлән: 1а" required>
+                <!-- Заменяем input type="text" на select для лучшего UX -->
+                <select id="class" 
+                        name="class" 
+                        required 
+                        autocomplete="off"
+                        spellcheck="false">
+                    <option value="" disabled selected>Класығыҙҙы һайлағыҙ</option>
+                    <option value="1а">1 А класс</option>
+                    <option value="1б">1 Б класс</option>
+                    <option value="2а">2 А класс</option>
+                    <option value="2б">2 Б класс</option>
+                    <option value="3а">3 А класс</option>
+                    <option value="3б">3 Б класс</option>
+                    <option value="4а">4 А класс</option>
+                    <option value="4б">4 Б класс</option>
+                </select>
             </div>
             
             <div class="error-message" id="error-message">
@@ -240,7 +277,7 @@
                         <i class="fas fa-redo"></i> Яңынан үтеү
                     </button>
                     <button type="button" id="cancel-retake" class="cancel-btn">
-                        Отмена
+                        <i class="fas fa-times"></i> Отмена
                     </button>
                 </div>
             </div>
@@ -281,63 +318,91 @@
             const lastName = document.getElementById('lastName').value.trim();
             const userClass = document.getElementById('class').value;
             
-            if (!firstName || !lastName || !userClass) return false;
+            if (!firstName || !lastName || !userClass) {
+                // Скрываем блок если поля не заполнены
+                document.getElementById('retake-notice').style.display = 'none';
+                document.getElementById('start-btn').style.display = 'block';
+                return false;
+            }
             
             const userKey = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${userClass}`;
             const savedData = localStorage.getItem(`olymp_result_${userKey}`);
             
             if (savedData) {
-                const result = JSON.parse(savedData);
-                
-                // Показываем блок с предыдущим результатом
-                document.getElementById('prev-name').textContent = `${firstName} ${lastName} (${userClass} класс)`;
-                document.getElementById('prev-score').textContent = `${result.score}/${result.total}`;
-                document.getElementById('prev-date').textContent = new Date(result.timestamp).toLocaleDateString('ru-RU');
-                
-                document.getElementById('retake-notice').style.display = 'block';
-                document.getElementById('start-btn').style.display = 'none';
-                
-                return true;
+                try {
+                    const result = JSON.parse(savedData);
+                    
+                    // Показываем блок с предыдущим результатом
+                    document.getElementById('prev-name').textContent = `${firstName} ${lastName} (${userClass} класы)`;
+                    document.getElementById('prev-score').textContent = `${result.score}/${result.total}`;
+                    document.getElementById('prev-date').textContent = result.date || new Date(result.timestamp).toLocaleDateString('ru-RU');
+                    
+                    document.getElementById('retake-notice').style.display = 'block';
+                    document.getElementById('start-btn').style.display = 'none';
+                    
+                    return true;
+                } catch (e) {
+                    console.error('Ошибка при чтении сохраненных данных:', e);
+                }
             }
             
+            // Если данных нет, скрываем блок
+            document.getElementById('retake-notice').style.display = 'none';
+            document.getElementById('start-btn').style.display = 'block';
             return false;
         }
 
         // Обработчики событий для полей ввода
-        document.getElementById('firstName').addEventListener('input', function() {
-            setTimeout(checkPreviousAttempt, 300);
-        });
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const classInput = document.getElementById('class');
 
-        document.getElementById('lastName').addEventListener('input', function() {
-            setTimeout(checkPreviousAttempt, 300);
-        });
+        // Функция для проверки с задержкой
+        let checkTimeout;
+        function delayedCheck() {
+            clearTimeout(checkTimeout);
+            checkTimeout = setTimeout(checkPreviousAttempt, 300);
+        }
 
-        document.getElementById('class').addEventListener('change', function() {
-            setTimeout(checkPreviousAttempt, 300);
-        });
+        firstNameInput.addEventListener('input', delayedCheck);
+        lastNameInput.addEventListener('input', delayedCheck);
+        classInput.addEventListener('change', delayedCheck);
 
         // Кнопка "Пройти заново"
         document.getElementById('retake-btn').addEventListener('click', function() {
-            // Удаляем запись о предыдущем результате
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const userClass = document.getElementById('class').value;
+            
+            if (!firstName || !lastName || !userClass) {
+                alert('Зинһар, бөтә яҫыҡтарҙы тултырығыҙ!');
+                return;
+            }
+            
+            // Удаляем запись о предыдущем результате
             const userKey = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${userClass}`;
             localStorage.removeItem(`olymp_result_${userKey}`);
+            
+            // Также удаляем сохраненные ответы
+            localStorage.removeItem(`olymp_answers_${firstName}_${lastName}_${userClass}`);
             
             // Прячем блок и показываем кнопку "Начать"
             document.getElementById('retake-notice').style.display = 'none';
             document.getElementById('start-btn').style.display = 'block';
+            
+            // Показываем сообщение об успехе
+            alert('Иҫәптәр таҙартылды. Яңынан башлау өсөн "Олимпиаданы башлау" төймәһенә баҫығыҙ.');
         });
 
         // Кнопка "Отмена"
         document.getElementById('cancel-retake').addEventListener('click', function() {
             document.getElementById('retake-notice').style.display = 'none';
             document.getElementById('start-btn').style.display = 'block';
-            document.getElementById('firstName').value = '';
-            document.getElementById('lastName').value = '';
-            document.getElementById('class').value = '';
-            document.getElementById('firstName').focus();
+            // Очищаем поля
+            firstNameInput.value = '';
+            lastNameInput.value = '';
+            classInput.value = '';
+            firstNameInput.focus();
         });
 
         // Обработка формы
@@ -367,13 +432,20 @@
         });
 
         // Автофокус на поле имени
-        document.getElementById('firstName').focus();
+        firstNameInput.focus();
+        
+        // Дополнительный трюк для обхода автозаполнения в Chrome
+        setTimeout(() => {
+            // Некоторые браузеры игнорируют autocomplete="off"
+            // Этот код меняет тип поля на время, а потом обратно
+            if (firstNameInput.value) {
+                const originalType = firstNameInput.type;
+                firstNameInput.type = 'password';
+                setTimeout(() => {
+                    firstNameInput.type = originalType;
+                }, 1);
+            }
+        }, 100);
     </script>
 </body>
-
 </html>
-
-
-
-
-
