@@ -122,6 +122,12 @@
             gap: 10px;
             display: none;
         }
+        
+        /* Стиль для неактивной кнопки */
+        .btn-disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+        }
     </style>
 </head>
 <body>
@@ -271,12 +277,10 @@
                     </div>
                 </div>
 
+                <!-- Только ОДНА кнопка - для отправки -->
                 <div class="button-container">
                     <button type="button" id="check-btn" class="btn check-btn">
                         <i class="fas fa-check-circle"></i> Тамамлау һәм тикшереү
-                    </button>
-                    <button type="reset" class="btn reset-btn">
-                        <i class="fas fa-redo"></i> Яңынан башлау
                     </button>
                 </div>
             </form>
@@ -289,8 +293,9 @@
                 </div>
                 <p id="result-message" class="result-message"></p>
                 <div id="time-result" style="margin: 20px 0; font-size: 1.1rem;"></div>
-                <button id="close-result" class="btn close-btn">
-                    <i class="fas fa-times"></i> Тестты ябыу
+                <!-- Кнопка для закрытия теста и возврата на начальную страницу -->
+                <button id="close-test-btn" class="btn close-btn" style="background: linear-gradient(135deg, #2196F3, #0D47A1);">
+                    <i class="fas fa-sign-out-alt"></i> Тестты тамамлау
                 </button>
             </section>
         </main>
@@ -300,7 +305,7 @@
             <div class="time-up-content">
                 <h2><i class="fas fa-clock"></i> Вақыт тамамланды!</h2>
                 <p>Олимпиаданы үтәү өсөн бирелгән вақыт үтте.</p>
-                <p>Һайлап өлгөргән барлыҡ яуаптар ҙа һаҡланған..</p>
+                <p>Һайлап өлгөргән барлыҡ яуаптар ҙа һаҡланған.</p>
                 <p>Яуап бирмәгән һорауҙар дөрөҫ түгел тип иҫәпләнәсәк.</p>
                 <p>Һөҙөмтәң автоматик рәүештә уҡытыусыға ебәрелә.</p>
                 <button id="auto-submit-btn" class="auto-submit-btn">
@@ -364,6 +369,7 @@
         let startTime = Date.now();
         let timerInterval;
         let isTimeUp = false;
+        let isSubmitted = false; // Флаг отправки результатов
 
         // Загрузка сохраненных ответов
         function loadSavedAnswers() {
@@ -474,14 +480,14 @@
             form.target = iframeName;
             form.acceptCharset = 'UTF-8';
             
-            // Поля для отправки
+            // Поля для отправки (используем найденные ID полей)
             const fields = [
                 { name: 'entry.1373641566', value: new Date().toLocaleDateString('ru-RU') }, // Дата
-                { name: 'entry.317459503', value: completionTime }, // Время выполнения (ИЗМЕНЕНО!)
+                { name: 'entry.317459503', value: completionTime }, // Время выполнения
                 { name: 'entry.1109285225', value: firstName }, // Имя
                 { name: 'entry.975925231', value: lastName }, // Фамилия
                 { name: 'entry.1311984471', value: `${score}/${total}` }, // Результат
-                { name: 'entry.1196822815', value: userClass + ' класс' } // Класс (ДОБАВЛЕНО!)
+                { name: 'entry.1196822815', value: userClass + ' класс' } // Класс
             ];
             
             // Добавляем все поля в форму
@@ -514,7 +520,7 @@
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-check-circle" style="font-size: 20px;"></i>
                         <div>
-                            <strong>Яуаптар һаҡланды!</strong><br>
+                            <strong>Һөҙөмтә һаҡланды!</strong><br>
                             <small>Уҡытыусы һеҙҙең баһағыҙҙы күрәсәк.</small>
                         </div>
                     </div>
@@ -618,10 +624,27 @@
             if (timerInterval) {
                 clearInterval(timerInterval);
             }
+            
+            // Делаем радиокнопки неактивными
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+            });
         }
 
         // Функция проверки ответов (используется и при ручной проверке и при авто-отправке)
         function checkAnswersAndSubmit() {
+            if (isSubmitted) {
+                alert('Һеҙ ҡабаттан ебәрергә тырышһығыҙ! Тест һөҙөмтәһе инде ебәрелгән.');
+                return;
+            }
+            
+            // Помечаем как отправленное
+            isSubmitted = true;
+            
+            // Скрываем кнопку проверки
+            const checkBtn = document.getElementById('check-btn');
+            checkBtn.style.display = 'none';
+            
             let score = 0;
             const totalQuestions = Object.keys(correctAnswers).length;
             const completionTime = getCompletionTime();
@@ -644,10 +667,7 @@
                         correctOption.parentElement.style.borderColor = '#4caf50';
                     }
                 } else {
-                    // Если ответ не выбран (в т.ч. когда время вышло)
-                    selectedOption.parentElement.style.backgroundColor = '#ffebee';
-                    selectedOption.parentElement.style.borderColor = '#f44336';
-                    
+                    // Если ответ не выбран
                     const correctOption = document.querySelector(`input[name="${question}"][value="${correctAnswers[question]}"]`);
                     if (correctOption) {
                         correctOption.parentElement.style.backgroundColor = '#e8f5e9';
@@ -681,18 +701,15 @@
             checkAnswersAndSubmit();
         });
 
-        document.getElementById('close-result').addEventListener('click', function() {
-            document.getElementById('result').style.display = 'none';
-        });
-
-        document.querySelector('button[type="reset"]').addEventListener('click', function() {
-            const allOptions = document.querySelectorAll('.option');
-            allOptions.forEach(option => {
-                option.style.backgroundColor = '';
-                option.style.borderColor = '';
-            });
-            document.getElementById('result').style.display = 'none';
-            // Не сбрасываем выбранные ответы - они сохраняются
+        // Кнопка закрытия теста - возврат на начальную страницу
+        document.getElementById('close-test-btn').addEventListener('click', function() {
+            // Очищаем данные из localStorage
+            localStorage.removeItem('olympFirstName');
+            localStorage.removeItem('olympLastName');
+            localStorage.removeItem('olympClass');
+            
+            // Переходим на начальную страницу
+            window.location.href = 'index.html';
         });
 
         // Сохраняем ответы при изменении
@@ -723,9 +740,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
-
-
