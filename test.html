@@ -459,7 +459,7 @@
         // Функция для отправки результата в Google Forms (с новыми ID полей)
         function sendToGoogleForm(score, total, completionTime) {
             // ID формы из новой ссылки: https://forms.gle/up9WujQA98aoytDi6
-            const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScz1fGyu3tR-zXgc6RxvLx7hdN3Sw-MCV6SPQ2lnPEZm41wzg/viewform?usp=header';
+            const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScz1fGyu3tR-zXgc6RxvLx7hdN3Sw-MCV6SPQ2lnPEZm41wzg/formResponse';
             
             console.log('📤 Отправка результатов в Google Форму...');
             console.log('Ученик:', firstName, lastName, userClass + ' класс');
@@ -742,4 +742,5 @@
     </script>
 </body>
 </html>
+
 
