@@ -244,22 +244,18 @@
             
             <div class="input-group">
                 <label for="class"><i class="fas fa-school"></i> Класс</label>
-                <!-- Заменяем input type="text" на select для лучшего UX -->
-                <select id="class" 
-                        name="class" 
-                        required 
-                        autocomplete="off"
-                        spellcheck="false">
-                    <option value="" disabled selected>Класығыҙҙы һайлағыҙ</option>
-                    <option value="1а">1 А класс</option>
-                    <option value="1б">1 Б класс</option>
-                    <option value="2а">2 А класс</option>
-                    <option value="2б">2 Б класс</option>
-                    <option value="3а">3 А класс</option>
-                    <option value="3б">3 Б класс</option>
-                    <option value="4а">4 А класс</option>
-                    <option value="4б">4 Б класс</option>
-                </select>
+                <!-- Оставляем текстовое поле для ввода любого класса -->
+                <input type="text" 
+                       id="class" 
+                       name="class" 
+                       placeholder="Мәҫәлән: 1а, 2б, 3в һ.б." 
+                       required 
+                       autocomplete="off"
+                       autocorrect="off"
+                       spellcheck="false">
+                <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                    <i class="fas fa-info-circle"></i> Классты һәм ағылфын индерегеҙ (мәҫәлән: 1а, 2б, 3в һ.б.)
+                </div>
             </div>
             
             <div class="error-message" id="error-message">
@@ -290,7 +286,7 @@
         <div class="rules">
             <h3><i class="fas fa-info-circle"></i> Олимпиада ҡағиҙәләре:</h3>
             <ul>
-                <li>Исем-шәрифегеҙҙе һәм фамилияғыҙҙы яҙығыҙ һәм класс һайлағыҙ</li>
+                <li>Исемегеҙҙе һәм фамилияғыҙҙы яҙығыҙ һәм класс һайлағыҙ</li>
                 <li>Бөтә тест һорауҙарына ла яуап бирергә тырышығыҙ</li>
                 <li>Һәр һорауға берәр дөрөҫ яуап һайлағыҙ</li>
                 <li>Тамамлағандан һуң, һеҙ үҙ һөҙөмтәһен күрерһегеҙ</li>
@@ -316,7 +312,7 @@
         function checkPreviousAttempt() {
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
-            const userClass = document.getElementById('class').value;
+            const userClass = document.getElementById('class').value.trim();
             
             if (!firstName || !lastName || !userClass) {
                 // Скрываем блок если поля не заполнены
@@ -366,13 +362,13 @@
 
         firstNameInput.addEventListener('input', delayedCheck);
         lastNameInput.addEventListener('input', delayedCheck);
-        classInput.addEventListener('change', delayedCheck);
+        classInput.addEventListener('input', delayedCheck);
 
         // Кнопка "Пройти заново"
         document.getElementById('retake-btn').addEventListener('click', function() {
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
-            const userClass = document.getElementById('class').value;
+            const userClass = document.getElementById('class').value.trim();
             
             if (!firstName || !lastName || !userClass) {
                 alert('Зинһар, бөтә яҫыҡтарҙы тултырығыҙ!');
@@ -411,7 +407,7 @@
             
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
-            const userClass = document.getElementById('class').value;
+            const userClass = document.getElementById('class').value.trim();
             const errorMessage = document.getElementById('error-message');
             
             // Проверяем, что все поля заполнены
@@ -437,13 +433,31 @@
         // Дополнительный трюк для обхода автозаполнения в Chrome
         setTimeout(() => {
             // Некоторые браузеры игнорируют autocomplete="off"
-            // Этот код меняет тип поля на время, а потом обратно
-            if (firstNameInput.value) {
-                const originalType = firstNameInput.type;
-                firstNameInput.type = 'password';
+            // Этот код меняет имя поля на время, а потом обратно
+            if (firstNameInput.value && firstNameInput.getAttribute('name') === 'firstName') {
+                const originalName = firstNameInput.getAttribute('name');
+                firstNameInput.setAttribute('name', 'first_name_' + Date.now());
                 setTimeout(() => {
-                    firstNameInput.type = originalType;
-                }, 1);
+                    firstNameInput.setAttribute('name', originalName);
+                }, 10);
+            }
+            
+            // То же самое для фамилии
+            if (lastNameInput.value && lastNameInput.getAttribute('name') === 'lastName') {
+                const originalName = lastNameInput.getAttribute('name');
+                lastNameInput.setAttribute('name', 'last_name_' + Date.now());
+                setTimeout(() => {
+                    lastNameInput.setAttribute('name', originalName);
+                }, 10);
+            }
+            
+            // То же самое для класса
+            if (classInput.value && classInput.getAttribute('name') === 'class') {
+                const originalName = classInput.getAttribute('name');
+                classInput.setAttribute('name', 'user_class_' + Date.now());
+                setTimeout(() => {
+                    classInput.setAttribute('name', originalName);
+                }, 10);
             }
         }, 100);
     </script>
