@@ -462,7 +462,7 @@
             const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScz1fGyu3tR-zXgc6RxvLx7hdN3Sw-MCV6SPQ2lnPEZm41wzg/formResponse';
             
             console.log('📤 Отправка результатов в Google Форму...');
-            console.log('Ученик:', firstName, lastName, userClass + ' класс');
+            console.log('Ученик:', firstName, lastName, userClass);
             console.log('Результат:', `${score}/${total}`);
             console.log('Время выполнения:', completionTime);
             
@@ -485,7 +485,7 @@
             const fields = [
                 { name: 'entry.1685564344', value: firstName }, // Имя
                 { name: 'entry.377819517', value: lastName }, // Фамилия
-                { name: 'entry.697910012', value: userClass + ' класс' }, // Класс
+                { name: 'entry.697910012', value: userClass }, // Класс
                 { name: 'entry.2011938141', value: `${score}/${total}` }, // Результат
                 { name: 'entry.120643382', value: completionTime }, // Время прохождения
                 { name: 'entry.468467523', value: new Date().toLocaleDateString('ru-RU') } // Дата прохождения
@@ -742,5 +742,6 @@
     </script>
 </body>
 </html>
+
 
 
