@@ -222,12 +222,7 @@
             
             <div class="input-group">
                 <label for="class"><i class="fas fa-school"></i> Класс</label>
-                <select id="class" required>
-                    <option value="" disabled selected>Выберите ваш класс</option>
-                    <option value="3">3 класс</option>
-                    <option value="4">4 класс</option>
-                    <option value="other">Другой класс</option>
-                </select>
+                <input type="text" id="class" placeholder="Например: 1а" required>
             </div>
             
             <div class="error-message" id="error-message">
@@ -375,4 +370,5 @@
         document.getElementById('firstName').focus();
     </script>
 </body>
+
 </html>
